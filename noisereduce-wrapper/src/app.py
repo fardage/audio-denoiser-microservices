@@ -16,8 +16,12 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/noisereduce", methods=["GET", "POST"])
+@app.route("/api", methods=["GET", "POST"])
 def upload_file():
+    if request.args.get("apikey") != os.environ["APIKEY"]:
+        flash("Unauthorized")
+        return redirect("https://zhaw.ch")
+
     if request.method != "POST":
         return render_template("upload.html")
 

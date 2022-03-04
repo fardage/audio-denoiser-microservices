@@ -3,7 +3,6 @@ import noisereduce as nr
 
 def run_enhancer(input_file_path, output_file_path, args):
     stationary = False
-    print(args.get("stationary"))
     if args.get("stationary") is not None:
         stationary = args.get("stationary") == 'True'
 
