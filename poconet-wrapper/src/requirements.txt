@@ -1,0 +1,14 @@
+click==8.0.4
+Flask==2.0.3
+itsdangerous==2.1.0
+Jinja2==3.0.3
+MarkupSafe==2.1.0
+mypy-extensions==0.4.3
+numpy==1.19.5
+openvino==2021.4.2
+pathspec==0.9.0
+platformdirs==2.5.1
+shortuuid==1.0.8
+tomli==2.0.1
+typing_extensions==4.1.1
+Werkzeug==2.0.3

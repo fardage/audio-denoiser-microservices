@@ -1,0 +1,35 @@
+version: '3'
+services:
+  nvidia-maxine-wrapper:
+    container_name: nvidia-maxine-wrapper
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    image: nvidia-maxine-wrapper
+    ports:
+            - 8000:8080
+  noisereduce-wrapper:
+    container_name: noisereduce-wrapper
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    image: noisereduce-wrapper
+    ports:
+            - 8001:8080
+  poconet-wrapper:
+    container_name: poconet-wrapper
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    image: poconet-wrapper
+    ports:
+            - 8002:8080
