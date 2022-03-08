@@ -12,11 +12,13 @@ keyring==10.6.0
 keyrings.alt==3.0
 MarkupSafe==2.0.1
 mypy-extensions==0.4.3
+numpy==1.19.5
 pathspec==0.9.0
 platformdirs==2.4.0
 pycrypto==2.6.1
 pygobject==3.26.1
 pyxdg==0.25
+scipy==1.5.4
 SecretStorage==2.3.1
 shortuuid==1.0.8
 six==1.11.0

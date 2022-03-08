@@ -1,6 +1,7 @@
 import textwrap
 import subprocess
 import os
+from scipy.io.wavfile import read as read_wav
 
 
 def write_config(input_file_path, output_file_path, args):
@@ -11,23 +12,20 @@ def write_config(input_file_path, output_file_path, args):
     if args.get("effect") is not None:
         effect = args.get("effect")
 
-    sample_rate = "16000"
-    if args.get("sample_rate") is not None:
-        sample_rate = args.get("sample_rate")
-
-    model_sr = "16k"
-    if sample_rate == "48000":
-        model_sr = "48k"
-
     intensity_ratio = "1.0"
     if args.get("intensity_ratio") is not None:
         intensity_ratio = args.get("intensity_ratio")
+
+    sample_rate, data = read_wav(input_file_path)
+    model_sr = "16k"
+    if sample_rate == 48000:
+        model_sr = "48k"
 
     config = textwrap.dedent(
         f"""\
         effect {effect}
         sample_rate {sample_rate}
-        model  /usr/local/AudioFX/models/sm_75/{effect}_{model_sr}k.trtpkg
+        model  /usr/local/AudioFX/models/sm_75/{effect}_{model_sr}.trtpkg
         real_time 0
         intensity_ratio {intensity_ratio}
         input_wav_list  {input_file_path}
