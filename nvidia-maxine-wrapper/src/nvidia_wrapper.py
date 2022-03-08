@@ -15,6 +15,10 @@ def write_config(input_file_path, output_file_path, args):
     if args.get("sample_rate") is not None:
         sample_rate = args.get("sample_rate")
 
+    model_sr = "16k"
+    if sample_rate == "48000":
+        model_sr = "48k"
+
     intensity_ratio = "1.0"
     if args.get("intensity_ratio") is not None:
         intensity_ratio = args.get("intensity_ratio")
@@ -23,7 +27,7 @@ def write_config(input_file_path, output_file_path, args):
         f"""\
         effect {effect}
         sample_rate {sample_rate}
-        model  /usr/local/AudioFX/models/sm_75/{effect}_16k.trtpkg
+        model  /usr/local/AudioFX/models/sm_75/{effect}_{model_sr}k.trtpkg
         real_time 0
         intensity_ratio {intensity_ratio}
         input_wav_list  {input_file_path}
