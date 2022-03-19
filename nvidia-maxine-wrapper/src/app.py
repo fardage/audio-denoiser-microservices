@@ -53,6 +53,7 @@ def upload_file():
     def cleanup(response):
         os.remove(g.input_file_path)
         os.remove(g.output_file_path)
+        return response
 
     return send_file(filename_out, as_attachment=True)
 
