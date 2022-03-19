@@ -1,5 +1,13 @@
 import os
-from flask import Flask, flash, request, redirect, send_file, render_template
+from flask import (
+    Flask,
+    flash,
+    request,
+    redirect,
+    send_file,
+    render_template,
+    after_this_request,
+)
 from werkzeug.utils import secure_filename
 import shortuuid
 import poconet_wrapper
@@ -46,6 +54,12 @@ def process_request(file, args):
     input_file_path, output_file_path = get_in_out_filepath(file.filename)
     file.save(input_file_path)
     poconet_wrapper.run_enhancer(input_file_path, output_file_path)
+
+    @after_this_request
+    def cleanup(input_file_path, output_file_path):
+        os.remove(input_file_path)
+        os.remove(output_file_path)
+
     return output_file_path
 
 
