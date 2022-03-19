@@ -57,12 +57,6 @@ def process_request(file, args):
     g.output_file_path = output_file_path
     file.save(input_file_path)
     poconet_wrapper.run_enhancer(input_file_path, output_file_path)
-
-    @after_this_request
-    def cleanup(response):
-        os.remove(g.input_file_path)
-        os.remove(g.output_file_path)
-
     return output_file_path
 
 

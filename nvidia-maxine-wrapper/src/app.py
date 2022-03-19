@@ -51,6 +51,12 @@ def upload_file():
     return send_file(filename_out, as_attachment=True)
 
 
+@after_this_request
+def cleanup(response):
+    os.remove(g.input_file_path)
+    os.remove(g.output_file_path)
+
+
 def process_request(file, args):
     input_file_path, output_file_path = get_in_out_filepath(file.filename)
     g.input_file_path = input_file_path
@@ -59,12 +65,6 @@ def process_request(file, args):
 
     config_path = nvidia_wrapper.write_config(input_file_path, output_file_path, args)
     nvidia_wrapper.run_enhancer(config_path)
-
-    @after_this_request
-    def cleanup(response):
-        os.remove(g.input_file_path)
-        os.remove(g, output_file_path)
-
     return output_file_path
 
 
