@@ -48,6 +48,12 @@ def upload_file():
         return redirect(request.url)
 
     filename_out = process_request(file, request.args)
+
+    @after_this_request
+    def cleanup(response):
+        os.remove(g.input_file_path)
+        os.remove(g.output_file_path)
+
     return send_file(filename_out, as_attachment=True)
 
 
