@@ -43,9 +43,3 @@ def run_enhancer(config_filepath):
     subprocess.run(
         [r"/usr/local/AudioFX/samples/effects_demo/effects_demo", "-c", config_filepath]
     )
-
-
-def cleanup(input_file_path, output_file_path, config_filepath):
-    os.remove(input_file_path)
-    os.remove(output_file_path)
-    os.remove(config_filepath)
