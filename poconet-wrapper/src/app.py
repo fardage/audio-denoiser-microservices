@@ -7,6 +7,7 @@ from flask import (
     send_file,
     render_template,
     after_this_request,
+    g,
 )
 from werkzeug.utils import secure_filename
 import shortuuid
@@ -52,13 +53,15 @@ def upload_file():
 
 def process_request(file, args):
     input_file_path, output_file_path = get_in_out_filepath(file.filename)
+    g.input_file_path = input_file_path
+    g.output_file_path = output_file_path
     file.save(input_file_path)
     poconet_wrapper.run_enhancer(input_file_path, output_file_path)
 
     @after_this_request
-    def cleanup(input_file_path, output_file_path):
-        os.remove(input_file_path)
-        os.remove(output_file_path)
+    def cleanup(response):
+        os.remove(g.input_file_path)
+        os.remove(g.output_file_path)
 
     return output_file_path
 
