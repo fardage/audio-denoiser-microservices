@@ -1,0 +1,89 @@
+import os
+from flask import (
+    Flask,
+    flash,
+    request,
+    redirect,
+    send_file,
+    render_template,
+    after_this_request,
+    g,
+)
+from werkzeug.utils import secure_filename
+import shortuuid
+import deep_xi_wrapper
+
+
+ALLOWED_EXTENSIONS = {"wav"}
+
+app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = "/DeepXi/set/test_noisy_speech/"
+app.config["OUT_FOLDER"] = "/DeepXi/out/mhanet-1.1c/e200/y/deepmmse/"
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/api", methods=["GET", "POST"])
+def upload_file():
+    if request.args.get("apikey") != os.environ["APIKEY"]:
+        flash("Unauthorized")
+        return redirect("https://zhaw.ch")
+
+    if request.method != "POST":
+        return render_template("upload.html")
+
+    if "file" not in request.files:
+        flash("No file part")
+        return redirect(request.url)
+
+    file = request.files["file"]
+    if file.filename == "":
+        flash("No selected file")
+        return redirect(request.url)
+
+    if not file and not allowed_file(file.filename):
+        flash("File not allowed")
+        return redirect(request.url)
+
+    filename_out = process_request(file)
+
+    @after_this_request
+    def cleanup(response):
+        os.remove(g.input_file_path)
+        os.remove(g.output_file_path)
+        return response
+
+    return send_file(filename_out, as_attachment=True)
+
+
+def process_request(file):
+    input_file_path, output_file_path = get_in_out_filepath(file.filename)
+    g.input_file_path = input_file_path
+    g.output_file_path = output_file_path
+    file.save(input_file_path)
+    deep_xi_wrapper.run_enhancer()
+    return output_file_path
+
+
+def get_in_out_filepath(filename):
+    file_id = shortuuid.uuid()
+    input_file_path = os.path.abspath(
+        os.path.join(
+            app.config["UPLOAD_FOLDER"], file_id + "_" + secure_filename(filename)
+        )
+    )
+
+    output_file_path = os.path.abspath(
+        os.path.join(
+            app.config["OUT_FOLDER"], file_id + "_" + secure_filename(filename)
+        )
+    )
+
+    return input_file_path, output_file_path
+
+
+if __name__ == "__main__":
+    app.debug = True
+    app.run(host="127.0.0.1", port=8080, debug=True)
