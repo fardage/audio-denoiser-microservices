@@ -18,7 +18,7 @@ ALLOWED_EXTENSIONS = {"wav"}
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/DeepXi/set/test_noisy_speech/"
-app.config["OUT_FOLDER"] = "/DeepXi/out/mhanet-1.1c/e200/y/deepmmse/"
+app.config["OUT_FOLDER"] = "/DeepXi/out/resnet-1.1n/e180/y/mmse-lsa/"
 
 
 def allowed_file(filename):
