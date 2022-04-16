@@ -10,6 +10,7 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ENV FLASK_ENV=production
 
+RUN pip3 install -r requirements.txt
 RUN pip3 install deepspeech
 RUN curl -LO https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm
 RUN curl -LO https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer
