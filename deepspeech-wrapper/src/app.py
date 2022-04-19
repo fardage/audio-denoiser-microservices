@@ -43,6 +43,10 @@ def upload_file():
         flash("No selected file")
         return redirect(request.url)
 
+    if "48000" in file.filename:
+        flash("only 16000hz supported")
+        return redirect(request.url)
+
     if not file and not allowed_file(file.filename):
         flash("File not allowed")
         return redirect(request.url)
@@ -52,7 +56,7 @@ def upload_file():
     @after_this_request
     def cleanup(response):
         os.remove(g.input_file_path)
-        os.remove(g.output_file_path)
+        if os.path.exists(g.output_file_path): os.remove(g.output_file_path)
         return response
 
     return send_file(filename_out, as_attachment=True)
@@ -64,7 +68,7 @@ def process_request(file, args):
     g.output_file_path = output_file_path
     file.save(input_file_path)
 
-    deepspeech_wrapper.run_enhancer(input_file_path)
+    deepspeech_wrapper.run_enhancer(input_file_path, output_file_path)
     return output_file_path
 
 
@@ -78,9 +82,11 @@ def get_in_out_filepath(filename):
 
     output_file_path = os.path.abspath(
         os.path.join(
-            app.config["OUT_FOLDER"], file_id + "_" + secure_filename(filename)
+            app.config["OUT_FOLDER"], secure_filename(filename)
         )
     )
+    out_path, out_ext = os.path.splitext(output_file_path)
+    output_file_path = out_path + ".txt"
 
     return input_file_path, output_file_path
 
